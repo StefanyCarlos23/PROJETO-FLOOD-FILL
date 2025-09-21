@@ -5,23 +5,23 @@ import java.io.IOException;
 
 public class ImageHandler {
 
-    public BufferedImage load(String path) throws IOException {
-        return ImageIO.read(new File(path));
+    public BufferedImage carregar(String caminho) throws IOException {
+        return ImageIO.read(new File(caminho));
     }
 
-    public void save(BufferedImage image, String path) throws IOException {
-        ImageIO.write(image, "png", new File(path));
+    public void salvar(BufferedImage img, String caminho) throws IOException {
+        ImageIO.write(img, "png", new File(caminho));
     }
 
-    public void saveStep(BufferedImage image, int frameNumber) throws IOException {
-        String path = String.format("frames/frame_%04d.png", frameNumber);
-        save(image, path);
+    public void salvarPasso(BufferedImage img, int numeroFrame) throws IOException {
+        String caminho = "frames/frame_" + numeroFrame + ".png";
+        salvar(img, caminho);
     }
 
-    public void prepareFramesFolder() {
-        File folder = new File("frames");
-        if (!folder.exists()) {
-            folder.mkdir();
+    public void prepararPastaFrames() {
+        File pasta = new File("frames");
+        if (!pasta.exists()) {
+            pasta.mkdir();
         }
     }
 }

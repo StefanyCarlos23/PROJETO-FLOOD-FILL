@@ -15,68 +15,66 @@ public class FloodFill {
         this.height = img.getHeight();
         this.newColorRgb = newColor.getRGB();
         this.imageHandler = new ImageHandler();
-        imageHandler.prepareFramesFolder();
+        imageHandler.prepararPastaFrames();
     }
 
-    public void floodWithStack(int startX, int startY) throws Exception {
-        int targetColor = image.getRGB(startX, startY);
-        if (targetColor == newColorRgb) return;
+    public void floodComPilha(int xInicial, int yInicial) throws Exception {
+        int corAlvo = image.getRGB(xInicial, yInicial);
+        if (corAlvo == newColorRgb) return;
 
-        Stack stack = new Stack(width * height);
-        stack.push(new Pixel(startX, startY));
+        Pilha pilha = new Pilha(width * height);
+        pilha.empilhar(new Pixel(xInicial, yInicial));
 
-        while (!stack.isEmpty()) {
-            Pixel p = stack.pop();
-            if (isValid(p.x, p.y, targetColor)) {
+        while (!pilha.vazia()) {
+            Pixel p = pilha.desempilhar();
+            if (estaValido(p.x, p.y, corAlvo)) {
                 image.setRGB(p.x, p.y, newColorRgb);
                 pixelCounter++;
 
-                if (pixelCounter % 200 == 0) {
+                if (pixelCounter % 250 == 0) {
                     frameCounter++;
-                    imageHandler.saveStep(image, frameCounter);
+                    imageHandler.salvarPasso(image, frameCounter);
                 }
 
-                stack.push(new Pixel(p.x + 1, p.y));
-                stack.push(new Pixel(p.x - 1, p.y));
-                stack.push(new Pixel(p.x, p.y + 1));
-                stack.push(new Pixel(p.x, p.y - 1));
+                pilha.empilhar(new Pixel(p.x + 1, p.y));
+                pilha.empilhar(new Pixel(p.x - 1, p.y));
+                pilha.empilhar(new Pixel(p.x, p.y + 1));
+                pilha.empilhar(new Pixel(p.x, p.y - 1));
             }
         }
 
-        // Salva imagem final
-        imageHandler.save(image, "Silksong_result_stack.png");
+        imageHandler.salvar(image, "resultado_pilha.png");
     }
 
-    public void floodWithQueue(int startX, int startY) throws Exception {
-        int targetColor = image.getRGB(startX, startY);
-        if (targetColor == newColorRgb) return;
+    public void floodComFila(int xInicial, int yInicial) throws Exception {
+        int corAlvo = image.getRGB(xInicial, yInicial);
+        if (corAlvo == newColorRgb) return;
 
-        Queue queue = new Queue(width * height);
-        queue.enqueue(new Pixel(startX, startY));
+        Fila fila = new Fila(width * height);
+        fila.enfileirar(new Pixel(xInicial, yInicial));
 
-        while (!queue.isEmpty()) {
-            Pixel p = queue.dequeue();
-            if (isValid(p.x, p.y, targetColor)) {
+        while (!fila.vazia()) {
+            Pixel p = fila.desenfileirar();
+            if (estaValido(p.x, p.y, corAlvo)) {
                 image.setRGB(p.x, p.y, newColorRgb);
                 pixelCounter++;
 
-                if (pixelCounter % 200 == 0) {
+                if (pixelCounter % 250 == 0) {
                     frameCounter++;
-                    imageHandler.saveStep(image, frameCounter);
+                    imageHandler.salvarPasso(image, frameCounter);
                 }
 
-                queue.enqueue(new Pixel(p.x + 1, p.y));
-                queue.enqueue(new Pixel(p.x - 1, p.y));
-                queue.enqueue(new Pixel(p.x, p.y + 1));
-                queue.enqueue(new Pixel(p.x, p.y - 1));
+                fila.enfileirar(new Pixel(p.x + 1, p.y));
+                fila.enfileirar(new Pixel(p.x - 1, p.y));
+                fila.enfileirar(new Pixel(p.x, p.y + 1));
+                fila.enfileirar(new Pixel(p.x, p.y - 1));
             }
         }
 
-        // Salva imagem final
-        imageHandler.save(image, "Silksong_result_queue.png");
+        imageHandler.salvar(image, "resultado_fila.png");
     }
 
-    private boolean isValid(int x, int y, int targetColor) {
-        return x >= 0 && y >= 0 && x < width && y < height && image.getRGB(x, y) == targetColor;
+    private boolean estaValido(int x, int y, int corAlvo) {
+        return x >= 0 && y >= 0 && x < width && y < height && image.getRGB(x, y) == corAlvo;
     }
 }
